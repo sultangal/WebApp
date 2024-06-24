@@ -9,6 +9,7 @@ builder.Services.AddDbContext<DataContext>(opts =>
     opts.EnableSensitiveDataLogging(true);
 });
 var app = builder.Build();
+app.UseMiddleware<WebApp.TestMiddleware>();
 app.MapGet("/", () => "Hello World!");
 var context = app.Services.CreateScope().ServiceProvider
     .GetRequiredService<DataContext>();
