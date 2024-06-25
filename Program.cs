@@ -8,10 +8,15 @@ builder.Services.AddDbContext<DataContext>(opts =>
         "ConnectionStrings:ProductConnection"]);
     opts.EnableSensitiveDataLogging(true);
 });
+
+builder.Services.AddControllers();
 var app = builder.Build();
-app.UseMiddleware<WebApp.TestMiddleware>();
+
+app.MapControllers();
 app.MapGet("/", () => "Hello World!");
+
 var context = app.Services.CreateScope().ServiceProvider
     .GetRequiredService<DataContext>();
 SeedData.SeedDatabase(context);
+
 app.Run();
