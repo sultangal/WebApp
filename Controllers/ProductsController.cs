@@ -6,23 +6,47 @@ namespace WebApp.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<Product> GetProducts()
+        private DataContext context;
+
+        public ProductsController(DataContext ctx)
         {
-            return new Product[]
-            {
-                new Product() { Name = "Product #1" },
-                new Product() { Name = "Product #2" },
-            };
+            context = ctx;
+        }
+
+        [HttpGet]
+        public IAsyncEnumerable<Product> GetProducts()
+        {
+            return context.Products.AsAsyncEnumerable();
         }
 
         [HttpGet("{id}")]
-        public Product GetProduct()
+        public async Task<Product?> GetProduct(long id)
         {
-            return new Product()
+            return await context.Products.FindAsync(id);
+        }
+
+        [HttpPost]
+        public async Task SaveProduct([FromBody] ProductBindingTarget target)
+        {
+            await context.Products.AddAsync(target.ToProduct());
+            await context.SaveChangesAsync();
+        }
+
+        [HttpPut]
+        public async Task UpdateProduct([FromBody] Product product)
+        {
+            context.Update(product);
+            await context.SaveChangesAsync();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task DeleteProduct(long id)
+        {
+            context.Products.Remove(new Product()
             {
-                ProductId = 1, Name = "Test Product"
-            };
+                ProductId = id, Name = string.Empty
+            });
+            await context.SaveChangesAsync();
         }
     }
 }

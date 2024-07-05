@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
 
@@ -11,8 +12,10 @@ builder.Services.AddDbContext<DataContext>(opts =>
 
 builder.Services.AddControllers();
 var app = builder.Build();
+app.UseMiddleware<WebApp.TestMiddleware>();
 
 app.MapControllers();
+
 app.MapGet("/", () => "Hello World!");
 
 var context = app.Services.CreateScope().ServiceProvider
