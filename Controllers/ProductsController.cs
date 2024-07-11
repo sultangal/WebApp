@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using WebApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("fixedWindow")]
     public class ProductsController : ControllerBase
     {
         private DataContext context;
@@ -20,20 +24,32 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Product?> GetProduct(long id)
+        [DisableRateLimiting]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetProduct(long id)
         {
-            return await context.Products.FindAsync(id);
+            Product? p = await context.Products.FindAsync(id);
+            if (p == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(p);
         }
 
         [HttpPost]
-        public async Task SaveProduct([FromBody] ProductBindingTarget target)
+        public async Task<IActionResult> SaveProduct(ProductBindingTarget target)
         {
-            await context.Products.AddAsync(target.ToProduct());
+            Product p = target.ToProduct();
+            await context.Products.AddAsync(p);
             await context.SaveChangesAsync();
+            return Ok(p);
         }
 
         [HttpPut]
-        public async Task UpdateProduct([FromBody] Product product)
+        public async Task UpdateProduct(Product product)
         {
             context.Update(product);
             await context.SaveChangesAsync();
@@ -47,6 +63,12 @@ namespace WebApp.Controllers
                 ProductId = id, Name = string.Empty
             });
             await context.SaveChangesAsync();
+        }
+
+        [HttpGet("redirect")]
+        public IActionResult Redirect()
+        {
+            return RedirectToAction(nameof(GetProduct), new { Id = 1 });
         }
     }
 }
