@@ -13,12 +13,8 @@
 <div class="m-2">
     <table class="table table-sm table-striped table-bordered">
         <tbody>
-        <tr>
-            <th>Name</th><td>@Model.Product?.Name</td>
-        </tr>
-        <tr>
-            <th>Price</th><td>@Model.Product?.Price</td>
-        </tr>
+        <tr for="Product.Name"/>
+        <tr for="Product.Price" format="c"/>
         </tbody>
     </table>
     <form method="post">
@@ -28,6 +24,7 @@
             <input name="price" class="form-control"
                    value="@Model.Product?.Price"/>
         </div>
+        716 Chapter 25 Using tag helpers
         <button class="btn btn-primary mt-2" type="submit">
             Submit
         </button>

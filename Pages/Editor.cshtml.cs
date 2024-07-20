@@ -7,7 +7,9 @@ namespace WebApp.Pages
     public class EditorModel : PageModel
     {
         private DataContext context;
-        public Product? Product { get; set; }
+
+        public Product Product { get; set; }
+            = new() { Name = string.Empty };
 
         public EditorModel(DataContext ctx)
         {
@@ -16,7 +18,8 @@ namespace WebApp.Pages
 
         public async Task OnGetAsync(long id)
         {
-            Product = await context.Products.FindAsync(id);
+            Product = await context.Products.FindAsync(id)
+                      ?? new() { Name = string.Empty };
         }
 
         public async Task<IActionResult> OnPostAsync(long id,
