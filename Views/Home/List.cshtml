@@ -1,20 +1,12 @@
 ﻿@model IEnumerable<Product>
-@{
-    Layout = null;
-    decimal average = Model.Average(p => p.Price);
-}
-<!DOCTYPE html>
-<html>
-<head>
-    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-</head>
-<body>
+@{ Layout = "_SimpleLayout"; }
 <h6 class="bg-secondary text-white text-center m-2 p-2">Products</h6>
 <div class="m-2">
     <table class="table table-sm table-striped table-bordered">
         <thead>
         <tr>
             <th>Name</th><th>Price</th>
+            <th>Category</th><th>Supplier</th><th></th>
         </tr>
         </thead>
         <tbody>
@@ -25,5 +17,3 @@
         </tbody>
     </table>
 </div>
-</body>
-</html>
