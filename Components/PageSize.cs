@@ -9,7 +9,7 @@ namespace WebApp.Components
             HttpClient client = new HttpClient();
             HttpResponseMessage response
                 = await client.GetAsync("http://microsoft.com");
-            return View(response.Content.Headers.ContentLength);
+            return View((long)response.Content.Headers.ContentLength);
         }
     }
 }
