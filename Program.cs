@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
 
@@ -13,6 +14,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<CitiesData>();
 builder.Services.Configure<AntiforgeryOptions>(opts => { opts.HeaderName = "X-XSRF-TOKEN"; });
+builder.Services.Configure<MvcOptions>(opts =>
+    opts.ModelBindingMessageProvider
+        .SetValueMustNotBeNullAccessor(value => "Please enter a value"));
 var app = builder.Build();
 app.UseStaticFiles();
 IAntiforgery antiforgery
