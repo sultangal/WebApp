@@ -1,33 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
+using WebApp.Filters;
 
 namespace WebApp.Controllers
 {
+    [Message("This is the controller-scoped filter", Order = 10)]
     public class HomeController : Controller
     {
-        private DataContext context;
-
-        public HomeController(DataContext ctx)
+        [Message("This is the first action-scoped filter", Order = 1)]
+        [Message("This is the second action-scoped filter", Order = -1)]
+        public IActionResult Index()
         {
-            context = ctx;
-        }
-
-        public async Task<IActionResult> Index(long id = 1)
-        {
-            ViewBag.AveragePrice =
-                await context.Products.AverageAsync(p => p.Price);
-            return View(await context.Products.FindAsync(id));
-        }
-
-        public IActionResult List()
-        {
-            return View(context.Products);
-        }
-
-        public IActionResult Html()
-        {
-            return View((object)"This is a <h3><i>string</i></h3>");
+            return View("Message",
+                "This is the Index action on the Home controller");
         }
     }
 }
